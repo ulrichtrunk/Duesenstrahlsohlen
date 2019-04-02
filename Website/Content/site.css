@@ -1,0 +1,57 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.ui-jqgrid.ui-jqgrid-bootstrap {
+    border-radius: inherit;
+}
+
+.jqgrow td:last-child {
+    border-right: 1px solid transparent;
+}
+
+.ui-jqgrid.ui-jqgrid-bootstrap {
+    border-radius:unset;
+}
+
+#throbber {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -66px; /* GIF dimensions */
+    margin-left: -66px;
+}
+
+.navbar-right {
+    margin-right: -5px;
+}
+
+.pp_pic_holder .pp_social {
+    display: none;
+}
+
+.pp_description {
+    text-align: center;
+}
+
+#showIterationImages {
+    cursor: pointer;
+}
+
+.actionButton {
+    margin-right:1em;
+}

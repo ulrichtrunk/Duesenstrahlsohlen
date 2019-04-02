@@ -1,0 +1,23 @@
+﻿@model JqGridModel
+@using Website.Models
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#' + '@($"{JqGridModel.IdPrefix}{Model.Name}")').jqGrid({
+        colModel: [
+            @Html.Raw(string.Join(",", Model.Columns))
+        ],
+        url: '@Model.Url',
+        guiStyle: "bootstrap",
+        iconSet: "fontAwesome",
+        @if (Model.Height > 0) { @Html.Raw($"height: {Model.Height},"); }
+        rowNum: @Model.RowNum,
+        pager: '#' + '@($"{JqGridModel.PagerIdPrefix}{Model.Name}")',
+        jsonReader: { repeatitems: false },
+        sortname: '@Model.SortName',
+        sortorder: '@Model.SortOrder.ToString().ToLower()',
+        autowidth: true,
+        shrinkToFit: true
+    });
+
+});
+</script>

@@ -1,0 +1,48 @@
+﻿@using Website.Controllers
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - DSS</title>
+
+    @Styles.Render("~/Content/styles")
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("DSS", nameof(CalculationController.Index), "Calculation", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            @if (Request.IsAuthenticated)
+            {
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Calculations", nameof(CalculationController.Index), "Calculation")</li>
+                    <li>@Html.ActionLink("New Calculation", nameof(CalculationController.New), "Calculation")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+            }
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - DSS</p>
+        </footer>
+    </div>
+    <div id="throbber" style="display:none;">
+        <img src="@Url.Content("~/Content/img/ajax-loader.gif")" />
+    </div>
+    @Scripts.Render("~/Scripts/scripts")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

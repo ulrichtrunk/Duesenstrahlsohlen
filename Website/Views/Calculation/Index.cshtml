@@ -1,0 +1,103 @@
+﻿@using Website.Models
+@using Website.Controllers
+
+@{
+    ViewBag.Title = "Calculations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var jqGridCalculations = new JqGridModel()
+    {
+        Name = "Calculations",
+        Url = Url.Action("GetGridData"),
+        SortName = "TimeStamp",
+        SortOrder = JqGridModel.JqGridSortOrder.Desc,
+        RowNum = 15,
+        Columns = new List<MvcHtmlString>()
+        {
+            Html.JqGridColumn("Id", "Id", true),
+            Html.JqGridColumn("Date", "TimeStamp", false, true, "date", "{ newformat: 'ISO8601Long' }"),
+            Html.JqGridNumberColumn("Unset Area", "UnsetAreaResult", " %"),
+            Html.JqGridNumberColumn("Res. Water", "ResidualWaterResult", " m³/s"),
+            Html.JqGridColumn("Estimated Time Left", "EstimatedTimeLeft", false, false),
+            Html.JqGridColumn("Time", "Time", false, false),
+            Html.JqGridColumn("User", "UserName"),
+            Html.JqGridColumn("State", "StateName"),
+            Html.JqGridColumn("Actions", "Action", false, false, "actionColumn", null, true)
+        }
+    };
+}
+
+@section scripts {
+    @{ Html.RenderPartial("JqGridScript", jqGridCalculations); }
+    <script>
+        function actionColumn(rowid) {
+            return '<a href="@Url.Action(nameof(CalculationController.Details))/' + rowid + '" class="actionButton" title="Show calculation details" target="_blank"><span class="fa fa-arrow-right"></span></a>' +
+                '<a href="@Url.Action(nameof(CalculationController.Clone))/' + rowid + '" class="actionButton" title="Clone calculation" target="_blank"><span class="fa fa-files-o"></span></a>' +
+                '<a href="#" class="actionButton deleteButton" data-id="' + rowid + '" title="Delete calculation" target="_blank"><span class="fa fa-minus-circle"></span></a>' +
+                '<a href="#" class="actionButton cancelButton" data-id="' + rowid + '" title="Cancel calculation" target="_blank"><span class="fa fa-times"></span></a>';
+        }
+
+        function deleteCalculation(rowid) {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@Url.Action($"{nameof(CalculationController.DeleteAsync)}/")' + rowid,
+                success: onSuccess
+            });
+        }
+
+        function cancelCalculation(rowid) {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@Url.Action($"{nameof(CalculationController.CancelAsync)}/")' + rowid,
+                success: onSuccess
+            });
+        }
+
+        function onSuccess(data) {
+            alert(data);
+            reloadGrid();
+        }
+
+        function reloadGrid() {
+            var grid = $('#@jqGridCalculations.Id');
+            grid.trigger("reloadGrid", [{ current: true }]);
+        }
+
+        function initActions() {
+            $(document).on('click', '.deleteButton', function () {
+                var id = $(this).attr('data-id');
+                deleteCalculation(id);
+                return false;
+            });
+
+            $(document).on('click', '.cancelButton', function () {
+                var id = $(this).attr('data-id');
+                cancelCalculation(id);
+                return false;
+            });
+        }
+
+        $(document).ready(function () {
+            initActions();
+
+            setInterval(function () {
+                reloadGrid();
+            }, 5000);
+        });
+    </script>
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <section>
+            <h4>Overview</h4>
+            @{ Html.RenderPartial("JqGrid", jqGridCalculations); }
+        </section>
+    </div>
+</div>

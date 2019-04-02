@@ -1,0 +1,235 @@
+﻿@model CalculationViewModel
+
+@using Website.Models
+@using Website.Controllers
+@using Shared.Entities
+
+@{
+    bool readOnly = Model == null ? false : Model.ReadOnly;
+}
+
+@using (Ajax.BeginForm(nameof(CalculationController.Execute), Url.Action("/"), new AjaxOptions() { UpdateTargetId = "formContainer", LoadingElementId = "throbber", OnComplete = "formCompleted" }, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.DisplaySuccessMessageFromTempData()
+
+    if (ViewData.ModelState.Keys.Contains(string.Empty))
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(true, "")
+        </div>
+    }
+
+    @Html.HiddenFor(x => x.Id)
+    <div class="form-group">
+        <h4 class="col-md-12">Basic Settings</h4>
+        <div class="col-md-6 form-group">
+            @Html.Label("Area", new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.Width, new { @class = "form-control", placeholder = "Width (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.Width, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.Height, new { @class = "form-control", placeholder = "Height (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.Height, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.Label("Border", new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.BorderX, new { @class = "form-control", placeholder = "X-Axis (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.BorderX, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.BorderY, new { @class = "form-control", placeholder = "Y-Axis (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.BorderY, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.Label("Drilling Point Distance", new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.DrillingPointDistanceX, new { @class = "form-control", placeholder = "X-Axis (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.DrillingPointDistanceX, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.DrillingPointDistanceY, new { @class = "form-control", placeholder = "Y-Axis (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.DrillingPointDistanceY, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.Depth, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.Depth, new { @class = "form-control", placeholder = "Depth (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.Depth, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.SealingSlabDiameter, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.SealingSlabDiameter, new { @class = "form-control", placeholder = "Radius (m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.SealingSlabDiameter, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.PixelsPerMeter, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.PixelsPerMeter, new { @class = "form-control", placeholder = "(px)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.PixelsPerMeter, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    if (!readOnly)
+    {
+        <div class="form-group">
+            <div class="col-md-12">
+                <input type="submit" value="Preview" class="btn btn-default" formaction="@Url.Action(nameof(CalculationController.BasePreview))" />
+                @if (Model != null && Model.HasBasePreview)
+                    {
+                    @Html.ActionLink("Show Image", nameof(CalculationController.BasePreviewImage), new RouteValueDictionary(Model),
+                    new Dictionary<string, object>() { { "rel", "prettyPhoto" }, { "class", "btn btn-default" } })
+                }
+            </div>
+        </div>
+    }
+    <hr />
+    <div class="form-group">
+        <h4 class="col-md-12">Standard Derivation</h4>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.StandardDerivationOffset, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.StandardDerivationOffset, new { @class = "form-control", placeholder = "(%)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.StandardDerivationOffset, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.StandardDerivationRadius, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.StandardDerivationRadius, new { @class = "form-control", placeholder = "(m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.StandardDerivationRadius, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.StandardDerivationDrillingPoint, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.StandardDerivationDrillingPoint, new { @class = "form-control", placeholder = "(m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.StandardDerivationDrillingPoint, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    if (!readOnly)
+    {
+        <div class="form-group">
+            <div class="col-md-12">
+                <input type="submit" value="Preview" class="btn btn-default" formaction="@Url.Action(nameof(CalculationController.DerivationPreview))" />
+                @if (Model != null && Model.HasDerivationPreview)
+                    {
+                    @Html.ActionLink("Show Image", nameof(CalculationController.DerivationPreviewImage), new RouteValueDictionary(Model),
+                        new Dictionary<string, object>() { { "rel", "prettyPhoto" }, { "class", "btn btn-default" } })
+                }
+            </div>
+        </div>
+    }
+    <hr />
+    <div class="form-group">
+        <h4 class="col-md-12">Monte-Carlo Simulation</h4>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.Iterations, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.Iterations, new { @class = "form-control" }, readOnly)
+                @Html.ValidationMessageFor(m => m.Iterations, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @if (readOnly)
+        {
+            <div class="col-md-6 form-group">
+                @Html.LabelFor(m => m.UnsetAreaResult, new { @class = "col-md-4 control-label" })
+                <div class="col-md-4">
+                    @Html.NumericTextBoxFor(m => m.UnsetAreaResult, new { @class = "form-control" }, true)
+                </div>
+            </div>
+        }
+    </div>
+    <hr />
+    <div class="form-group">
+        <h4 class="col-md-12">Residual Water Amount</h4>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.WaterLevelDifference, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.WaterLevelDifference, new { @class = "form-control", placeholder = "(m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.WaterLevelDifference, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.PermeabilityOfSoleWithoutUnsetArea, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.PermeabilityOfSoleWithoutUnsetArea, new { @class = "form-control", placeholder = "(m/s)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.PermeabilityOfSoleWithoutUnsetArea, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.SealingSlabThickness, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.SealingSlabThickness, new { @class = "form-control", placeholder = "(m)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.SealingSlabThickness, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-6 form-group">
+            @Html.LabelFor(m => m.PermeabilityOfSoleAtUnsetArea, new { @class = "col-md-4 control-label" })
+            <div class="col-md-4">
+                @Html.NumericTextBoxFor(m => m.PermeabilityOfSoleAtUnsetArea, new { @class = "form-control", placeholder = "(m/s)" }, readOnly)
+                @Html.ValidationMessageFor(m => m.PermeabilityOfSoleAtUnsetArea, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @if (readOnly)
+        {
+            <div class="col-md-6 form-group">
+                @Html.LabelFor(m => m.ResidualWaterResult, new { @class = "col-md-4 control-label" })
+                <div class="col-md-4">
+                    @Html.NumericTextBoxFor(m => m.ResidualWaterResult, new { @class = "form-control", placeholder = "" }, true)
+                </div>
+            </div>
+        }
+    </div>
+    <hr />
+    <div class="form-group">
+        <div class="col-md-12">
+            @if (!readOnly || State.ValidExecuteStates.Contains(Model.StateName))
+            {
+                <input type="submit" value="Execute" class="btn btn-default" formaction="@Url.Action(nameof(CalculationController.Execute))" />
+            }
+            @if (!readOnly)
+            {
+                <input type="reset" value="Reset" class="btn btn-default" />
+            }
+            <input type="submit" value="Clone" data-fullpostback="1" formaction="@Url.Action(nameof(CalculationController.Clone))" class="btn btn-default" />
+            @if (Model != null && State.ValidDeleteStates.Contains(Model.StateName))
+            {
+                <input type="submit" value="Delete" data-fullpostback="1" formaction="@Url.Action(nameof(CalculationController.Delete))" class="btn btn-default deleteButton" />
+            }
+            @if (Model != null && State.ValidCSVExportStates.Contains(Model.StateName))
+            {
+                @Html.ActionLink("CSV-Export", nameof(CalculationController.Export), new { id = Model.Id }, new { @class = "btn btn-default", target = "_blank" })
+            }
+            @if (Model != null && State.ValidShowImageStates.Contains(Model.StateName))
+            {
+                @Html.ActionLink("Show Images", null, new { id = Model.Id }, new
+                {
+                    id = "showIterationImages",
+                    data_id = Model.Id,
+                    data_url = Url.Action("IterationImage"),
+                    data_iterations = Model.MaxIteration,
+                    @class = "btn btn-default"
+                })
+            }
+            @if (Model != null && State.ValidCancelStates.Contains(Model.StateName))
+            {
+            <input type="submit" value="Cancel" formaction="@Url.Action(nameof(CalculationController.Cancel))" class="btn btn-default cancelButton" />
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12">
+            @Html.ActionLink("Back", nameof(CalculationController.Index))
+        </div>
+    </div>
+}

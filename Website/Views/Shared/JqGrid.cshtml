@@ -1,0 +1,7 @@
+﻿@model JqGridModel
+@using Website.Models
+
+<div id="@($"{JqGridModel.ContainerIdPrefix}{Model.Name}")" >
+    <table id="@($"{JqGridModel.IdPrefix}{Model.Name}")"></table>
+    <div id="@($"{JqGridModel.PagerIdPrefix}{Model.Name}")"></div>
+</div>

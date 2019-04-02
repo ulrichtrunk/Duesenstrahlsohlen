@@ -1,0 +1,24 @@
+﻿@using Website.Models
+@model Exception
+@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <section>
+                @if(Model != null)
+                {
+                    if (Model is HttpException)
+                    {
+                        <p>Error Code @(((HttpException)Model).GetHttpCode())</p>
+                    }
+
+                    <p>@Model.Message</p>
+                }
+        </section>
+    </div>
+</div>
