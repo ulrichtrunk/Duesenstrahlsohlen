@@ -196,6 +196,7 @@
     <Compile Include="Code\AppUser.cs" />
     <Compile Include="Code\AppUserManager.cs" />
     <Compile Include="Code\AppUserStore.cs" />
+    <Compile Include="Code\DummyPasswordHasher.cs" />
     <Compile Include="Code\Argon2PasswordHasher.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\IdentityExtensions.cs" />
