@@ -12,7 +12,7 @@ namespace Website.Code
     {
         public AppUserManager(IUserStore<AppUser, int> store) : base(store)
         {
-            this.PasswordHasher = new Argon2PasswordHasher();
+            this.PasswordHasher = new DummyPasswordHasher();
         }
     }
 }

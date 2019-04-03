@@ -45,7 +45,7 @@ namespace Website.Controllers
                 {
                     user = new User();
                     user.Name = mail;
-                    user.Password = new Argon2PasswordHasher().Hash(password); 
+                    user.Password = new DummyPasswordHasher().HashPassword(password); 
 
                     userService.Save(user);
                 }

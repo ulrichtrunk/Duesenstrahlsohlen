@@ -22,7 +22,7 @@ namespace Website
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            new BootstrapService(new Argon2PasswordHasher()).Run(HttpRuntime.AppDomainAppPath.Replace("\\Website", ""));
+            new BootstrapService(new DummyPasswordHasher()).Run(HttpRuntime.AppDomainAppPath.Replace("\\Website", ""));
         }
 
         protected void Application_Error()
